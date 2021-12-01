@@ -1,5 +1,6 @@
 from mesa import Agent, Model
-from mesa.time import StagedActivation
+#from mesa.time import StagedActivation
+from mesa.time import BaseScheduler
 from mesa.space import Grid
 import time
 
@@ -15,19 +16,20 @@ class bcolors:
     UNDERLINE = '\033[4m'
     
 # Clase que instancia los coches
-class RandomAgent(Agent):
-   
+class Automovil(Agent):
+
+    # Constructor
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.direction = 1
+        self.direction = 1 #Dirección inicial del agente según Moore (hacia adelante)
 
-    #Funcion que verifica si hay otro agente para moverse a ese espacio.
+    # Mueve agente
     def move(self):
-       
-        possible_steps = self.model.grid.get_neighborhood(
+        # Se verifica si hay vecinos cercanos que puedan chocar con el agente en las celdas vecinas
+        possible_steps = self.model.grid.get_neighborhood (
             self.pos,
-            moore=True, 
-            include_center=True) 
+            moore = True, 
+            include_center = True) 
         
         freeSpaces = list(map(self.model.grid.is_cell_empty, possible_steps))
 
@@ -43,20 +45,24 @@ class RandomAgent(Agent):
         self.move()
 
 # Clase que instancia los semáforos como obstaculos
-class ObstacleAgent(Agent):
+class Semaforo (Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
            
-    def step(self):
-        pass  
+    def step(self, signal):
+        if (signal is 1):
+            pass
+        if (signal is 2):
+            pass
 
 # Clase que instancia el modelo de agentes
 class RandomModel(Model):
     def __init__(self, N, width, height):
         self.num_agents = N
         self.grid = Grid(width,height,torus = False) 
-        self.schedule = StagedActivation(self)
+        self.schedule = BaseScheduler(self)
         self.running = True 
+
         #Posibilidad de aparicion en 2 carriles
         self.spawn1 = [631,636]
         self.semaforo1 = []
@@ -75,7 +81,7 @@ class RandomModel(Model):
         
         # Agrega el agente a una posicion vacía
         for i in range(self.num_agents):
-            a = RandomAgent(i+1000, self) 
+            a = Automovil(i+1000, self) 
             self.schedule.add(a)
 
             #Cambiar posiciones de spawneo de coches
@@ -124,7 +130,7 @@ class RandomModel(Model):
 
     def spawnSemaforo(self, semaforo, coord, num):
         for pos in coord:
-            obs = ObstacleAgent(pos, self)
+            obs = Semaforo(pos, self)
             semaforo.append(obs)
             self.schedule.add(obs)
             self.grid.place_agent(obs, pos)

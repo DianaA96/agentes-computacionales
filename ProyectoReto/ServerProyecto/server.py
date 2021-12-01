@@ -38,24 +38,24 @@ def updateLights():
         trafficModel.updateSemaforosStatus(semaforos)
         return jsonify({"message":"Estatus de semaforo actualizado."})
 
-@app.route('/getObstacles', methods=['GET'])
+@app.route('/getObstacles', methods = ['GET'])
 def getObstacles():
     global trafficModel
 
     if request.method == 'GET':
-        carPositions = [{"x": x, "y":1, "z":z} for (a, x, z) in trafficModel.grid.coord_iter() if isinstance(a, ObstacleAgent)]
+        carPositions = [{"x": x, "y":1, "z":z} for (a, x, z) in trafficModel.grid.coord_iter() if isinstance(a, Semaforo)]
 
         return jsonify({'positions':carPositions})
 
-@app.route('/getAgents', methods=['GET'])
+@app.route('/getAgents', methods = ['GET'])
 def getAgents():
     global trafficModel
     if request.method == 'GET':
-        carPositions = [{"x": x, "y":50, "z":z} for (a, x, z) in trafficModel.grid.coord_iter() if isinstance(a, RandomAgent)]
+        carPositions = [{"x": x, "y":50, "z":z} for (a, x, z) in trafficModel.grid.coord_iter() if isinstance(a, Automovil)]
 
         return jsonify({'positions':carPositions})
 
-@app.route('/update', methods=['GET'])
+@app.route('/update', methods = ['GET'])
 def updateModel():
     global currentStep, trafficModel
     if request.method == 'GET':
