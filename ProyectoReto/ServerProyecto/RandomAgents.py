@@ -35,7 +35,7 @@ class Automovil(Agent):
 
         if freeSpaces[self.direction]:
             self.model.grid.move_agent(self, possible_steps[self.direction])
-            print(f"Se mueve de {self.pos} a {possible_steps[self.direction]}; direction {self.direction}")
+            #print(f"Se mueve de {self.pos} a {possible_steps[self.direction]}; direction {self.direction}")
         else:
             print(f"No se puede mover de {self.pos} en esa direccion.")
 
@@ -47,64 +47,72 @@ class Automovil(Agent):
 
 # Clase que instancia los semáforos como obstaculos
 class Semaforo (Agent):
-    def __init__(self, unique_id, model, numSemaforo, posAlto, posSiga):
-        super().__init__(unique_id, model, numSemaforo, posAlto, posSiga)
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
         self.statusLuz = 0 #Luz roja inicial
-        self.num_semaforo = numSemaforo
-        self.posicionesSemaforo = [posAlto, posSiga]
+        self.num_semaforo = 0
+        self.posicionesSemaforo = [[], []]
 
     def move(self):
         #0 es luz roja, 1 es verde
-        if(self.numSemaforo == 1):
+        if(self.num_semaforo == 1):
             if(self.model.sem1 == 0):
                 if(self.statusLuz == 0):
                     pass
-                if(self.statusLuz == 1):
+                elif(self.statusLuz == 1):
                     self.model.grid.move_agent(self, self.posicionesSemaforo[self.model.sem1])
+                    self.statusLuz = self.model.sem1
 
             elif(self.model.sem1 == 1):
                 if(self.statusLuz == 0):
                     self.model.grid.move_agent(self, self.posicionesSemaforo[self.model.sem1])
-                if(self.statusLuz == 1):
+                    self.statusLuz = self.model.sem1
+                elif(self.statusLuz == 1):
                     pass
         
-        if(self.numSemaforo == 2):
+        elif(self.num_semaforo == 2):
             if(self.model.sem2 == 0):
                 if(self.statusLuz == 0):
                     pass
-                if(self.statusLuz == 1):
+                elif(self.statusLuz == 1):
                     self.model.grid.move_agent(self, self.posicionesSemaforo[self.model.sem2])
+                    self.statusLuz = self.model.sem2
 
             elif(self.model.sem2 == 1):
                 if(self.statusLuz == 0):
                     self.model.grid.move_agent(self, self.posicionesSemaforo[self.model.sem2])
-                if(self.statusLuz == 1):
+                    self.statusLuz = self.model.sem2
+                elif(self.statusLuz == 1):
                     pass
 
-        if(self.numSemaforo == 3):
+        elif(self.num_semaforo == 3):
             if(self.model.sem3 == 0):
                 if(self.statusLuz == 0):
                     pass
-                if(self.statusLuz == 1):
+                elif(self.statusLuz == 1):
                     self.model.grid.move_agent(self, self.posicionesSemaforo[self.model.sem3])
+                    self.statusLuz = self.model.sem3
 
             elif(self.model.sem3 == 1):
                 if(self.statusLuz == 0):
                     self.model.grid.move_agent(self, self.posicionesSemaforo[self.model.sem3])
-                if(self.statusLuz == 1):
+                    self.statusLuz = self.model.sem3
+                elif(self.statusLuz == 1):
                     pass
 
-        if(self.numSemaforo == 4):
+        elif(self.num_semaforo == 4):
             if(self.model.sem4 == 0):
                 if(self.statusLuz == 0):
                     pass
-                if(self.statusLuz == 1):
+                elif(self.statusLuz == 1):
                     self.model.grid.move_agent(self, self.posicionesSemaforo[self.model.sem4])
+                    self.statusLuz = self.model.sem4
 
             elif(self.model.sem4 == 1):
                 if(self.statusLuz == 0):
                     self.model.grid.move_agent(self, self.posicionesSemaforo[self.model.sem4])
-                if(self.statusLuz == 1):
+                    self.statusLuz = self.model.sem4
+                elif(self.statusLuz == 1):
                     pass
            
     def step(self):
@@ -135,13 +143,13 @@ class RandomModel(Model):
         
         #Coordenadas donde se encuentra el limite de parada de cada semaforo
         s1Coord=[(x,y) for y in range(471,481) for x in range(393, 394) if y in [471, 481 - 1] or x in [393, 394-1]]
-        s2Coord=[(x,y) for y in range(627,637) for x in range(465, 466) if y in [627, 637 - 1] or x in [465, 466-1]]
+        s2Coord=[(x,y) for y in range(627,637) for x in range(470, 471) if y in [627, 637 - 1] or x in [470, 471-1]]
         s3Coord=[(x,y) for y in range(642, 643) for x in range(415,425) if y in [642, 643 - 1] or x in [415, 425-1]]
         s4Coord=[(x,y) for y in range(463,464) for x in range(433, 443) if y in [463,464 - 1] or x in [433, 443-1]]
 
         # Coordenadas a las que se moverá el semáforo cuando la luz esté en verde
         s1CoordMove=[(x,y) for y in range(482,492) for x in range(393, 394) if y in [482,492 - 1] or x in [393, 394-1]]
-        s2CoordMove=[(x,y) for y in range(638,648) for x in range(465, 466) if y in [638,648 - 1] or x in [465, 466-1]]
+        s2CoordMove=[(x,y) for y in range(638,648) for x in range(470, 471) if y in [638,648 - 1] or x in [470, 471-1]]
         s3CoordMove=[(x,y) for y in range(642, 643) for x in range(426,436) if y in [642, 643 - 1] or x in [426,436-1]]
         s4CoordMove=[(x,y) for y in range(463,464) for x in range(444, 454) if y in [463,464 - 1] or x in [444, 454-1]]
         
@@ -162,7 +170,7 @@ class RandomModel(Model):
             while (not self.grid.is_cell_empty(pos)):
                 pos = pos_gen(self.spawn1)
             self.grid.place_agent(a, pos)
-            for i in range(self.random.randint(0,10)):
+            for i in range(self.random.randint(0,15)):
                 self.step()
 
     #Funcion que actualiza el estado de los semaforos
@@ -179,7 +187,10 @@ class RandomModel(Model):
     def spawnSemaforo(self, semaforo, coord, coordMove, num):
         iter = 0
         for pos in coord:
-            obs = Semaforo(pos, self, num, pos, coordMove[iter])
+            obs = Semaforo(pos, self)
+            obs.num_semaforo=num
+            obs.posicionesSemaforo[0]=pos
+            obs.posicionesSemaforo[1]=coordMove[iter]
             semaforo.append(obs)
             self.schedule.add(obs)
             self.grid.place_agent(obs, pos)
