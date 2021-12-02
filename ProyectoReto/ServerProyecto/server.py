@@ -33,9 +33,10 @@ def updateLights():
     print(bcolors.WARNING + "Endpoint call" + bcolors.ENDC)
     global currentStep, trafficModel
     if request.method == 'POST':
-        semaforos = int(request.form.get('semaforos'))
-        print(bcolors.OKGREEN + str(semaforos) + bcolors.ENDC)
-        trafficModel.updateSemaforosStatus(semaforos)
+        status = int(request.form.get('status'))
+        num = int(request.form.get('num'))
+        trafficModel.updateSemaforosStatus(num, status)
+        trafficModel.step()
         return jsonify({"message":"Estatus de semaforo actualizado."})
 
 @app.route('/getObstacles', methods = ['GET'])
