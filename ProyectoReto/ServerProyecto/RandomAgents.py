@@ -44,16 +44,18 @@ class Automovil(Agent):
         print(f"Agente: {self.unique_id} movimiento {self.direction}")
         self.move()
 
+
 # Clase que instancia los semáforos como obstaculos
 class Semaforo (Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
+        self.signal = 0
            
-    def step(self, signal):
-        if (signal is 1):
-            pass
-        if (signal is 2):
-            pass
+    def step(self):
+        # if (signal is 1):
+        #     pass
+        # if (signal is 2):
+        pass
 
 # Clase que instancia el modelo de agentes
 class RandomModel(Model):
@@ -65,6 +67,7 @@ class RandomModel(Model):
 
         #Posibilidad de aparicion en 2 carriles
         self.spawn1 = [631,636]
+
         self.semaforo1 = []
         self.semaforo2 = []
         self.semaforo3 = []
@@ -76,6 +79,8 @@ class RandomModel(Model):
         s3Coord=[(x,y) for y in range(642, 643) for x in range(415,425) if y in [642, 643 - 1] or x in [415, 425-1]]
         s4Coord=[(x,y) for y in range(463,464) for x in range(433, 443) if y in [463,464 - 1] or x in [433, 443-1]]
         
+        self.spawnSemaforo(self.semaforo1, s1Coord,1)
+        self.spawnSemaforo(self.semaforo2, s2Coord,2)
         self.spawnSemaforo(self.semaforo3, s3Coord,3)
         self.spawnSemaforo(self.semaforo4, s4Coord,4)
         
@@ -94,16 +99,11 @@ class RandomModel(Model):
                 self.step()
 
     #Funcion que actualiza el estado de los semaforos
-    def updateSemaforosStatus(self, semaforosStatus):
-        print(bcolors.WARNING + "Updating Lights Status" + bcolors.ENDC)
-        print(bcolors.WARNING + str(semaforosStatus) + bcolors.ENDC)
+    def updateSemaforosStatus(self, numSemaforo, semaforoStatus):
+
+        # Es necesario verificar cuál es la posición del semáforo para determinar si lo vamos a mover o no
         
-        #Coordenadas donde se encuentra el limite de parada de cada semaforo
-        s1Coord=[(x,y) for y in range(471,481) for x in range(393, 394) if y in [471, 481 - 1] or x in [393, 394-1]]
-        s2Coord=[(x,y) for y in range(627,637) for x in range(465, 466) if y in [627, 637 - 1] or x in [465, 466-1]]
-        s3Coord=[(x,y) for y in range(642, 643) for x in range(415,425) if y in [642, 643 - 1] or x in [415, 425-1]]
-        s4Coord=[(x,y) for y in range(463,464) for x in range(433, 443) if y in [463,464 - 1] or x in [433, 443-1]]
-        
+
         if(semaforosStatus == 2):
             print(bcolors.OKGREEN + "Cambio a estatus 1" + bcolors.ENDC)
             self.greenlight(self.semaforo1)
@@ -123,14 +123,14 @@ class RandomModel(Model):
 
         self.schedule.step()
 
-    def greenlight(self, semaforo):
-        print(bcolors.OKGREEN + "Quitando semaforo" + bcolors.ENDC)
-        for j in semaforo:
-            self.grid.remove_agent(j)
+    # def greenlight(self, semaforo):
+    #     print(bcolors.OKGREEN + "Quitando semaforo" + bcolors.ENDC)
+    #     for j in semaforo:
+    #         self.grid.remove_agent(j)
 
     def spawnSemaforo(self, semaforo, coord, num):
         for pos in coord:
-            obs = Semaforo(pos, self)
+            obs = Semaforo( , self)
             semaforo.append(obs)
             self.schedule.add(obs)
             self.grid.place_agent(obs, pos)
