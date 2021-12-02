@@ -52,9 +52,14 @@ def getObstacles():
 def getAgents():
     global trafficModel
     if request.method == 'GET':
-        carPositions = [{"x": x, "y":50, "z":z} for (a, x, z) in trafficModel.grid.coord_iter() if isinstance(a, Automovil)]
+        # direccion = 0
+        # carPositions = [{"x": x, "y":50, "z":z, "dir":a.direction} for (a, x, z) in trafficModel.grid.coord_iter() if isinstance(a, Automovil)]
+        for(a, x, z) in trafficModel.grid.coord_iter():
+            if isinstance(a, Automovil):
+                carPositions = [{"x": x, "y":50, "z":z}]
+                carDirection = [{"dir": a.direction}]
 
-        return jsonify({'positions':carPositions})
+        return jsonify({'positions':carPositions, 'direccion':carDirection})
 
 @app.route('/update', methods = ['GET'])
 def updateModel():

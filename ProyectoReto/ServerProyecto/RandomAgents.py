@@ -1,5 +1,6 @@
 from mesa import Agent, Model
 from mesa.time import StagedActivation
+import random
 #from mesa.time import BaseScheduler
 from mesa.space import Grid
 import time
@@ -16,19 +17,22 @@ class bcolors:
     UNDERLINE = '\033[4m'
     
 # Clase que instancia los coches
+
+
 class Automovil(Agent):
 
     # Constructor
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.direction = 1 #Dirección inicial del agente según Moore (hacia adelante)
+        self.direction = random.choice(1,3,5,7) #Dirección inicial del agente según Moore (hacia adelante)
 
     # Mueve agente
     def move(self):
+        # x,y=self.pos
         # Se verifica si hay vecinos cercanos que puedan chocar con el agente en las celdas vecinas
         possible_steps = self.model.grid.get_neighborhood (
             self.pos,
-            moore = True, 
+            moore = True,  
             include_center = True) 
         
         freeSpaces = list(map(self.model.grid.is_cell_empty, possible_steps))
@@ -40,9 +44,10 @@ class Automovil(Agent):
             print(f"No se puede mover de {self.pos} en esa direccion.")
 
     def step(self):
-        self.direction = 1
+        self.direction = self.direction
         print(f"Agente: {self.unique_id} movimiento {self.direction}")
         self.move()
+
 
 
 # Clase que instancia los semáforos como obstaculos
@@ -127,7 +132,10 @@ class RandomModel(Model):
         self.running = True 
 
         #Posibilidad de aparicion en 2 carriles
-        self.spawn1 = [631,636]
+        self.spawn1 = [474,479]
+        self.spawn2 = [631,636]
+        self.spawn3 = [417,422]
+        self.spawn4 = [436,441]
 
         #Arreglos de semaforos (instancia los agentes)
         self.semaforo1 = []
@@ -161,15 +169,49 @@ class RandomModel(Model):
         
         # Agrega el agente a una posicion vacía
         for i in range(self.num_agents):
+            
             a = Automovil(i+1000, self) 
             self.schedule.add(a)
 
             #Cambiar posiciones de spawneo de coches
-            pos_gen = lambda arr: (970, arr[self.random.randint(0,1)])
-            pos = pos_gen(self.spawn1)
-            while (not self.grid.is_cell_empty(pos)):
+
+            #Carril 1
+            if(a.direction==5):
+                
+                pos_gen = lambda arr: (20, arr[self.random.randint(0,1)])
                 pos = pos_gen(self.spawn1)
+
+                while (not self.grid.is_cell_empty(pos)):
+                    pos = pos_gen(self.spawn1)
+
+            #Carril 2
+            elif(a.direction==1):
+                pos_gen = lambda arr: (970, arr[self.random.randint(0,1)])
+                pos = pos_gen(self.spawn2)
+
+                while (not self.grid.is_cell_empty(pos)):
+                    pos = pos_gen(self.spawn2)
+
+            #Carril 3
+            elif(a.direction==7):
+                pos_gen = lambda arr: (arr[self.random.randint(0,1)], 786)
+                pos = pos_gen(self.spawn3)
+
+                while (not self.grid.is_cell_empty(pos)):
+                    pos = pos_gen(self.spawn3)
+
+            #Carril 4
+            elif(a.direction==3):
+                pos_gen = lambda arr: (arr[self.random.randint(0,1)], 300)
+                pos = pos_gen(self.spawn4)
+
+                while (not self.grid.is_cell_empty(pos)):
+                    pos = pos_gen(self.spawn4)
+            
             self.grid.place_agent(a, pos)
+
+
+
             for i in range(self.random.randint(0,15)):
                 self.step()
 
