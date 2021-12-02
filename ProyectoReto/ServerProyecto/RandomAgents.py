@@ -17,14 +17,12 @@ class bcolors:
     UNDERLINE = '\033[4m'
     
 # Clase que instancia los coches
-
-
 class Automovil(Agent):
 
     # Constructor
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.direction = random.choice(1,3,5,7) #Dirección inicial del agente según Moore (hacia adelante)
+        self.direction = random.choice(1,3,5,7) #Dirección inicial del agente según Moore (hacia adelante, atrás, izq y der)
 
     # Mueve agente
     def move(self):
@@ -39,25 +37,27 @@ class Automovil(Agent):
 
         if freeSpaces[self.direction]:
             self.model.grid.move_agent(self, possible_steps[self.direction])
-            #print(f"Se mueve de {self.pos} a {possible_steps[self.direction]}; direction {self.direction}")
+            print(f"Se mueve de {self.pos} a {possible_steps[self.direction]}; direction {self.direction}")
         else:
             print(f"No se puede mover de {self.pos} en esa direccion.")
 
+    # Paso de reloj implementado
     def step(self):
         self.direction = self.direction
         print(f"Agente: {self.unique_id} movimiento {self.direction}")
         self.move()
 
-
-
-# Clase que instancia los semáforos como obstaculos
+# Clase que instancia los semáforos como obstáculos
 class Semaforo (Agent):
+
+    # Constructor
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
         self.statusLuz = 0 #Luz roja inicial
         self.num_semaforo = 0
         self.posicionesSemaforo = [[], []]
 
+    # Mueve agente
     def move(self):
         #0 es luz roja, 1 es verde
         if(self.num_semaforo == 1):
@@ -119,12 +119,16 @@ class Semaforo (Agent):
                     self.statusLuz = self.model.sem4
                 elif(self.statusLuz == 1):
                     pass
-           
+    
+    # Paso de reloj implementado
     def step(self):
         self.move()
 
+
 # Clase que instancia el modelo de agentes
 class RandomModel(Model):
+
+    # Constructor
     def __init__(self, N, width, height):
         self.num_agents = N
         self.grid = Grid(width,height,torus = False) 
@@ -171,7 +175,6 @@ class RandomModel(Model):
         for i in range(self.num_agents):
             
             a = Automovil(i+1000, self) 
-            self.schedule.add(a)
 
             #Cambiar posiciones de spawneo de coches
 
@@ -209,13 +212,12 @@ class RandomModel(Model):
                     pos = pos_gen(self.spawn4)
             
             self.grid.place_agent(a, pos)
-
-
+            self.schedule.add(a)
 
             for i in range(self.random.randint(0,15)):
                 self.step()
 
-    #Funcion que actualiza el estado de los semaforos
+    #Función que actualiza el estado de los semáforos
     def updateSemaforosStatus(self, numSemaforo, semaforoStatus):               
         if(numSemaforo == 1):
             self.sem1 = semaforoStatus
@@ -226,6 +228,7 @@ class RandomModel(Model):
         elif(numSemaforo == 4):
             self.sem4 = semaforoStatus
 
+    # Función que instancia los semáforos
     def spawnSemaforo(self, semaforo, coord, coordMove, num):
         iter = 0
         for pos in coord:
@@ -239,5 +242,5 @@ class RandomModel(Model):
             iter += 1
 
     def step(self):
-        '''Advance the model by one step.'''
+    # Avanza el reloj del modelo un paso
         self.schedule.step()
