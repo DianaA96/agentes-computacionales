@@ -49,13 +49,14 @@ class Automovil(Agent):
 class Semaforo (Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.signal = 0
+        self.statusLuz = 0 #Luz roja inicial
+
+    def move(self, new_position, new_statusLuz):
+        self.model.grid.move_agent(self, new_position)
+        self.statusLuz = new_statusLuz
            
     def step(self):
-        # if (signal is 1):
-        #     pass
-        # if (signal is 2):
-        pass
+        self.move()
 
 # Clase que instancia el modelo de agentes
 class RandomModel(Model):
@@ -79,6 +80,7 @@ class RandomModel(Model):
         s3Coord=[(x,y) for y in range(642, 643) for x in range(415,425) if y in [642, 643 - 1] or x in [415, 425-1]]
         s4Coord=[(x,y) for y in range(463,464) for x in range(433, 443) if y in [463,464 - 1] or x in [433, 443-1]]
         
+        #Se instancian los cuatro semáforos
         self.spawnSemaforo(self.semaforo1, s1Coord,1)
         self.spawnSemaforo(self.semaforo2, s2Coord,2)
         self.spawnSemaforo(self.semaforo3, s3Coord,3)
@@ -99,44 +101,102 @@ class RandomModel(Model):
                 self.step()
 
     #Funcion que actualiza el estado de los semaforos
-    def updateSemaforosStatus(self, numSemaforo, semaforoStatus):
+    def updateSemaforosStatus(self, numSemaforo, semaforoStatus): 
 
-        # Es necesario verificar cuál es la posición del semáforo para determinar si lo vamos a mover o no
+        # Coordenadas a las que se moverá el semáforo cuando la luz esté en verde
+        s1CoordMove=[(x,y) for y in range(482,492) for x in range(393, 394) if y in [482,492 - 1] or x in [393, 394-1]]
+        s2CoordMove=[(x,y) for y in range(638,648) for x in range(465, 466) if y in [638,648 - 1] or x in [465, 466-1]]
+        s3CoordMove=[(x,y) for y in range(642, 643) for x in range(426,436) if y in [642, 643 - 1] or x in [426,436-1]]
+        s4CoordMove=[(x,y) for y in range(463,464) for x in range(444, 454) if y in [463,464 - 1] or x in [444, 454-1]]
+
+        iter = 0
+
+        #0 es luz roja, 1 es verde
+        if(numSemaforo == 1):
+            if(semaforoStatus is 0):
+                for agenteSemaforo in self.semaforo1:
+                    if(agenteSemaforo.statusLuz is 0):
+                        pass
+                    elif(self.semaforo1.statusLuz is 1):
+                        agenteSemaforo.move(s1CoordMove[iter], semaforoStatus)
+                        iter += 1
+                iter = 0
+
+            elif(semaforoStatus is 1):
+                for agenteSemaforo in self.semaforo1:
+                    if(agenteSemaforo.statusLuz is 0):
+                        agenteSemaforo.move(s1CoordMove[iter], semaforoStatus)
+                        iter += 1
+                    elif(self.semaforo1.statusLuz is 1):
+                        pass
+                iter = 0
         
+        if(numSemaforo == 2):
+            if(semaforoStatus is 0):
+                for agenteSemaforo in self.semaforo2:
+                    if(agenteSemaforo.statusLuz is 0):
+                        pass
+                    elif(self.semaforo2.statusLuz is 1):
+                        agenteSemaforo.move(s2CoordMove[iter], semaforoStatus)
+                        iter += 1
+                iter = 0
 
-        if(semaforosStatus == 2):
-            print(bcolors.OKGREEN + "Cambio a estatus 1" + bcolors.ENDC)
-            self.greenlight(self.semaforo1)
-            self.greenlight(self.semaforo2)
-            self.spawnSemaforo(self.semaforo3, s3Coord,3)
-            self.spawnSemaforo(self.semaforo4, s4Coord,4)
-            
-        elif(semaforosStatus == 1):
-            print(bcolors.OKGREEN + "Cambio a estatus 2" + bcolors.ENDC)
-            self.greenlight(self.semaforo3)
-            self.greenlight(self.semaforo4)
-            self.spawnSemaforo(self.semaforo1, s1Coord,1)
-            self.spawnSemaforo(self.semaforo2, s2Coord,2)
-            
-        else:
-            print(bcolors.FAIL + "No hay estatus" + bcolors.ENDC)
+            elif(semaforoStatus is 1):
+                for agenteSemaforo in self.semaforo2:
+                    if(agenteSemaforo.statusLuz is 0):
+                        agenteSemaforo.move(s2CoordMove[iter], semaforoStatus)
+                        iter += 1
+                    elif(self.semaforo2.statusLuz is 1):
+                        pass
+                iter = 0
+        
+        if(numSemaforo == 3):
+            if(semaforoStatus is 0):
+                for agenteSemaforo in self.semaforo3:
+                    if(agenteSemaforo.statusLuz is 0):
+                        pass
+                    elif(self.semaforo3.statusLuz is 1):
+                        agenteSemaforo.move(s3CoordMove[iter], semaforoStatus)
+                        iter += 1
+                iter = 0
+
+            elif(semaforoStatus is 1):
+                for agenteSemaforo in self.semaforo3:
+                    if(agenteSemaforo.statusLuz is 0):
+                        agenteSemaforo.move(s3CoordMove[iter], semaforoStatus)
+                        iter += 1
+                    elif(self.semaforo3.statusLuz is 1):
+                        pass
+                iter = 0
+        
+        if(numSemaforo == 4):
+            if(semaforoStatus is 0):
+                for agenteSemaforo in self.semaforo4:
+                    if(agenteSemaforo.statusLuz is 0):
+                        pass
+                    elif(self.semaforo4.statusLuz is 1):
+                        agenteSemaforo.move(s4CoordMove[iter], semaforoStatus)
+                        iter += 1
+                iter = 0
+
+            elif(semaforoStatus is 1):
+                for agenteSemaforo in self.semaforo4:
+                    if(agenteSemaforo.statusLuz is 0):
+                        agenteSemaforo.move(s4CoordMove[iter], semaforoStatus)
+                        iter += 1
+                    elif(self.semaforo4.statusLuz is 1):
+                        pass
+                iter = 0                 
 
         self.schedule.step()
 
-    # def greenlight(self, semaforo):
-    #     print(bcolors.OKGREEN + "Quitando semaforo" + bcolors.ENDC)
-    #     for j in semaforo:
-    #         self.grid.remove_agent(j)
-
     def spawnSemaforo(self, semaforo, coord, num):
         for pos in coord:
-            obs = Semaforo( , self)
+            obs = Semaforo(pos, self)
             semaforo.append(obs)
             self.schedule.add(obs)
             self.grid.place_agent(obs, pos)
-        print(bcolors.WARNING + f"Semaforo {num} creado" + bcolors.ENDC)
 
     def step(self):
         '''Advance the model by one step.'''
         self.schedule.step()
-
