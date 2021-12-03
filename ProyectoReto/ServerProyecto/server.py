@@ -25,7 +25,7 @@ def initModel():
 
         print(request.form)
         print(number_agents, width, height)
-        trafficModel = RandomModel(number_agents, width, height)
+        #trafficModel = RandomModel(number_agents, width, height)
 
         print("TRAFFIC MODEL GENERADO")
 
@@ -55,7 +55,7 @@ def getObstacles():
 def getAgents():
     global trafficModel
     if request.method == 'GET':
-        carInfo = [{"w": a.direction,"x": x, "y":50, "z":z} for (a, x, z) in trafficModel.grid.coord_iter() if isinstance(a, Automovil)]
+        carInfo = [{"w": a.direction,"x": x, "y":a.unique_id, "z":z} for (a, x, z) in trafficModel.grid.coord_iter() if isinstance(a, Automovil)]
 
         return jsonify({'carInfo':carInfo})
 
