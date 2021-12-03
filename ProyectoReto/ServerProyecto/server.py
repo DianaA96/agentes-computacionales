@@ -25,7 +25,7 @@ def initModel():
 
         print(request.form)
         print(number_agents, width, height)
-        #trafficModel = RandomModel(number_agents, width, height)
+        trafficModel = RandomModel(number_agents, width, height)
 
         print("TRAFFIC MODEL GENERADO")
 
@@ -64,7 +64,9 @@ def updateModel():
     global currentStep, trafficModel
     if request.method == 'GET':
         trafficModel.step()
-        currentStep += 1
+        trafficModel.step()
+        trafficModel.step()
+        currentStep += 3
         print("UPDATE DE PYTHON")
         return jsonify({'message':f'Model updated to step {currentStep}.', 'currentStep':currentStep})
 

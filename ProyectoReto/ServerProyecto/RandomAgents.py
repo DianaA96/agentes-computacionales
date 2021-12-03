@@ -1,7 +1,7 @@
 from mesa import Agent, Model
 from mesa.time import StagedActivation
 import random
-#from mesa.time import BaseScheduler
+from mesa.time import BaseScheduler
 from mesa.space import Grid
 import time
 
@@ -22,7 +22,15 @@ class Automovil(Agent):
     # Constructor
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.direction = 10 #Dirección inicial del agente según Moore (hacia adelante, atrás, izq y der)
+        self.direction = 0 #Dirección inicial del agente según Moore (hacia adelante, atrás, izq y der)
+        if (self.unique_id < 200):
+            self.direction = 7 
+        elif (self.unique_id < 300 and self.unique_id >= 200):
+            self.direction = 1 
+        elif (self.unique_id < 400 and self.unique_id >= 300):
+            self.direction = 3 
+        elif (self.unique_id < 500  and self.unique_id >= 400):
+            self.direction = 5
 
     # Mueve agente
     def move(self):
@@ -136,7 +144,7 @@ class RandomModel(Model):
     def __init__(self, N, width, height):
         self.num_agents = N
         self.grid = Grid(width,height,torus = False) 
-        self.schedule = StagedActivation(self)
+        self.schedule = BaseScheduler(self)
         self.running = True 
 
         #Posibilidad de aparicion en 2 carriles
