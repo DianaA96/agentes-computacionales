@@ -5,7 +5,8 @@ from RandomAgents import *
 number_agents = 10
 width = 28
 height = 28
-trafficModel = None
+trafficModel = RandomModel(2, 1000, 1000)
+#trafficModel = None
 currentStep = 0
 
 app = Flask("Traffic example")
@@ -25,6 +26,8 @@ def initModel():
         print(request.form)
         print(number_agents, width, height)
         trafficModel = RandomModel(number_agents, width, height)
+
+        print("TRAFFIC MODEL GENERADO")
 
         return jsonify({"message":"Parameters received, model initiated."})
 
@@ -52,14 +55,9 @@ def getObstacles():
 def getAgents():
     global trafficModel
     if request.method == 'GET':
-        # direccion = 0
-        # carPositions = [{"x": x, "y":50, "z":z, "dir":a.direction} for (a, x, z) in trafficModel.grid.coord_iter() if isinstance(a, Automovil)]
-        for(a, x, z) in trafficModel.grid.coord_iter():
-            if isinstance(a, Automovil):
-                carPositions = [{"x": x, "y":50, "z":z}]
-                carDirection = a.direction
+        carInfo = [{"w": a.direction,"x": x, "y":50, "z":z} for (a, x, z) in trafficModel.grid.coord_iter() if isinstance(a, Automovil)]
 
-        return jsonify({'positions':carPositions, 'direccion':carDirection})
+        return jsonify({'carInfo':carInfo})
 
 @app.route('/update', methods = ['GET'])
 def updateModel():
@@ -67,6 +65,7 @@ def updateModel():
     if request.method == 'GET':
         trafficModel.step()
         currentStep += 1
+        print("UPDATE DE PYTHON")
         return jsonify({'message':f'Model updated to step {currentStep}.', 'currentStep':currentStep})
 
 if __name__=='__main__':
