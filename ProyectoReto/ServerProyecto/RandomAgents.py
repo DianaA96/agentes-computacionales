@@ -22,7 +22,7 @@ class Automovil(Agent):
     # Constructor
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.direction = random.choice([1,3,5,7]) #Dirección inicial del agente según Moore (hacia adelante, atrás, izq y der)
+        self.direction = 0 #Dirección inicial del agente según Moore (hacia adelante, atrás, izq y der)
 
     # Mueve agente
     def move(self):
@@ -31,20 +31,24 @@ class Automovil(Agent):
         possible_steps = self.model.grid.get_neighborhood (
             self.pos,
             moore = True,  
-            include_center = True) 
+            include_center = False) 
         
         freeSpaces = list(map(self.model.grid.is_cell_empty, possible_steps))
+        #print(possible_steps)
+        #print(freeSpaces)
 
         if freeSpaces[self.direction]:
+            print(f"Agente: {self.unique_id} se mueve de {self.pos} a {possible_steps[self.direction]}; direction {self.direction}")
             self.model.grid.move_agent(self, possible_steps[self.direction])
-            print(f"Se mueve de {self.pos} a {possible_steps[self.direction]}; direction {self.direction}")
+            print(f"Agente en {self.pos}")
+            #print(f"Agente: {self.unique_id} movimiento {self.direction}")
         else:
             print(f"No se puede mover de {self.pos} en esa direccion.")
 
     # Paso de reloj implementado
     def step(self):
-        self.direction = self.direction
-        print(f"Agente: {self.unique_id} movimiento {self.direction}")
+        #self.direction = self.direction
+        #print(f"Agente: {self.unique_id} movimiento {self.direction}")
         self.move()
 
 # Clase que instancia los semáforos como obstáculos
@@ -172,50 +176,117 @@ class RandomModel(Model):
         self.spawnSemaforo(self.semaforo4, s4Coord, s4CoordMove, 4)
         
         # Agrega el agente a una posicion vacía
-        for i in range(self.num_agents*4):
+        for i in range(4):
+            if(i == 0):
+                for j in range(self.num_agents):
+                    a = Automovil(i + 100 + j, self)
+                    a.direction = 5
+
+                    pos_gen = lambda arr: (20, arr[self.random.randint(0,1)])
+                    pos = pos_gen(self.spawn1)
+
+                    while (not self.grid.is_cell_empty(pos)):
+                        pos = pos_gen(self.spawn1)
+
+                    self.schedule.add(a)
+                    self.grid.place_agent(a, pos)
+                
             
-            a = Automovil(i+1000, self) 
+
+            elif(i == 1):
+                for j in range(self.num_agents):
+                    a = Automovil(i + 200 + j, self)
+                    a.direction = 1
+
+                    pos_gen = lambda arr: (970, arr[self.random.randint(0,1)])
+                    pos = pos_gen(self.spawn2)
+
+                    while (not self.grid.is_cell_empty(pos)):
+                        pos = pos_gen(self.spawn2)
+
+                    self.schedule.add(a)
+                    self.grid.place_agent(a, pos)
+
+            
+
+            elif(i == 2):
+                for j in range(self.num_agents):
+                    a = Automovil(i + 300 + j, self)
+                    a.direction = 7
+
+                    pos_gen = lambda arr: (arr[self.random.randint(0,1)], 786)
+                    pos = pos_gen(self.spawn3)
+
+                    while (not self.grid.is_cell_empty(pos)):
+                        pos = pos_gen(self.spawn3)
+
+                    self.schedule.add(a)
+                    self.grid.place_agent(a, pos)
+
+
+            elif(i == 3):
+                for j in range(self.num_agents):
+                    a = Automovil(i + 400 + j, self)
+                    a.direction = 3
+
+                    pos_gen = lambda arr: (arr[self.random.randint(0,1)], 300)
+                    pos = pos_gen(self.spawn4)
+                    
+                    while (not self.grid.is_cell_empty(pos)):
+                        pos = pos_gen(self.spawn4)
+
+                    self.schedule.add(a)
+                    self.grid.place_agent(a, pos)
+
+    
+
+                
+
+            # for 4
+            # for numDeAgentes
+            # instancia el coche y le asigna su direccion, sus coordenadas iniciales y su carril
+            
+            # a = Automovil(i+1000, self) 
 
             #Cambiar posiciones de spawneo de coches
 
-            #Carril 1
-            if(a.direction==5):
+            # #Carril 1
+            # if(a.direction==5):
                 
-                pos_gen = lambda arr: (20, arr[self.random.randint(0,1)])
-                pos = pos_gen(self.spawn1)
+            #     pos_gen = lambda arr: (20, arr[self.random.randint(0,1)])
+            #     pos = pos_gen(self.spawn1)
 
-                while (not self.grid.is_cell_empty(pos)):
-                    pos = pos_gen(self.spawn1)
+            #     while (not self.grid.is_cell_empty(pos)):
+            #         pos = pos_gen(self.spawn1)
 
-            #Carril 2
-            elif(a.direction==1):
-                pos_gen = lambda arr: (970, arr[self.random.randint(0,1)])
-                pos = pos_gen(self.spawn2)
+            # #Carril 2
+            # elif(a.direction==1):
+            #     pos_gen = lambda arr: (970, arr[self.random.randint(0,1)])
+            #     pos = pos_gen(self.spawn2)
 
-                while (not self.grid.is_cell_empty(pos)):
-                    pos = pos_gen(self.spawn2)
+            #     while (not self.grid.is_cell_empty(pos)):
+            #         pos = pos_gen(self.spawn2)
 
-            #Carril 3
-            elif(a.direction==7):
-                pos_gen = lambda arr: (arr[self.random.randint(0,1)], 786)
-                pos = pos_gen(self.spawn3)
+            # #Carril 3
+            # elif(a.direction==7):
+            #     pos_gen = lambda arr: (arr[self.random.randint(0,1)], 786)
+            #     pos = pos_gen(self.spawn3)
 
-                while (not self.grid.is_cell_empty(pos)):
-                    pos = pos_gen(self.spawn3)
+            #     while (not self.grid.is_cell_empty(pos)):
+            #         pos = pos_gen(self.spawn3)
 
-            #Carril 4
-            elif(a.direction==3):
-                pos_gen = lambda arr: (arr[self.random.randint(0,1)], 300)
-                pos = pos_gen(self.spawn4)
+            # #Carril 4
+            # elif(a.direction==3):
+            #     pos_gen = lambda arr: (arr[self.random.randint(0,1)], 300)
+            #     pos = pos_gen(self.spawn4)
                     
-                while (not self.grid.is_cell_empty(pos)):
-                    pos = pos_gen(self.spawn4)
+            #     while (not self.grid.is_cell_empty(pos)):
+            #         pos = pos_gen(self.spawn4)
             
-            self.grid.place_agent(a, pos)
-            self.schedule.add(a)
+            # self.schedule.add(a)
+            # self.grid.place_agent(a, pos)
 
-            for i in range(self.random.randint(0,15)):
-                self.step()
+            
 
     #Función que actualiza el estado de los semáforos
     def updateSemaforosStatus(self, numSemaforo, semaforoStatus):               
