@@ -1,0 +1,4 @@
+---
+applications:
+ - name: test-agents
+   random-route: true

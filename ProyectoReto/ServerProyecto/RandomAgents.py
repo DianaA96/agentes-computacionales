@@ -22,7 +22,7 @@ class Automovil(Agent):
     # Constructor
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.direction = random.choice(1,3,5,7) #Dirección inicial del agente según Moore (hacia adelante, atrás, izq y der)
+        self.direction = random.choice([1,3,5,7]) #Dirección inicial del agente según Moore (hacia adelante, atrás, izq y der)
 
     # Mueve agente
     def move(self):
@@ -172,7 +172,7 @@ class RandomModel(Model):
         self.spawnSemaforo(self.semaforo4, s4Coord, s4CoordMove, 4)
         
         # Agrega el agente a una posicion vacía
-        for i in range(self.num_agents):
+        for i in range(self.num_agents*4):
             
             a = Automovil(i+1000, self) 
 
@@ -207,7 +207,7 @@ class RandomModel(Model):
             elif(a.direction==3):
                 pos_gen = lambda arr: (arr[self.random.randint(0,1)], 300)
                 pos = pos_gen(self.spawn4)
-
+                    
                 while (not self.grid.is_cell_empty(pos)):
                     pos = pos_gen(self.spawn4)
             

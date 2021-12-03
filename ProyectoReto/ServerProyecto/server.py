@@ -15,7 +15,7 @@ app = Flask("Traffic example")
 @app.route('/init', methods=['POST', 'GET'])
 def initModel():
     global currentStep, trafficModel, number_agents, width, height
-
+    print(bcolors.WARNING + "INIT" + bcolors.ENDC)
     if request.method == 'POST':
         number_agents = int(request.form.get('NAgents'))
         width = int(request.form.get('width'))
@@ -57,7 +57,7 @@ def getAgents():
         for(a, x, z) in trafficModel.grid.coord_iter():
             if isinstance(a, Automovil):
                 carPositions = [{"x": x, "y":50, "z":z}]
-                carDirection = [{"dir": a.direction}]
+                carDirection = a.direction
 
         return jsonify({'positions':carPositions, 'direccion':carDirection})
 
